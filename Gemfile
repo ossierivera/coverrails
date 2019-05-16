@@ -3,15 +3,6 @@ source 'https://rubygems.org'
 gem 'dotenv-rails', groups: [:development, :test]
 
 
-
-
-#patches security vulnerability
-#https://groups.google.com/forum/#!topic/rubyonrails-security/zRNVOUhKHrg
-#gem "actionview", ">= 4.2.11.1"
-
-#patches security vulnerability
-#https://nvd.nist.gov/vuln/detail/CVE-2018-16476
-#gem "activejob", ">= 4.2.11"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.9'
 # Use postgresql as the database for Active Record
