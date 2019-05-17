@@ -21,10 +21,14 @@ class DataEncryptingKey < ActiveRecord::Base
     create!(attrs.merge(key: AES.key))
   end
 
+  def self.non_primary
+    where(primary: false)
+  end
+  
   def self.rotate_key
     # this must lock the database because we don't want any race conditions here
     DataEncryptingKey.transaction do
-      DataEncryptingKey.primary.update!(primary: false)
+      DataEncryptingKey.primary.update_attributes(primary: false)
       DataEncryptingKey.generate!(primary: true)
     end
     
@@ -32,7 +36,7 @@ class DataEncryptingKey < ActiveRecord::Base
       es.reencrypt!(DataEncryptingKey.primary)
     end
 
-    DataEncryptingKey.where(primary: false).destroy_all 
+    DataEncryptingKey.non_primary.destroy_all 
     
   end
   
@@ -40,4 +44,3 @@ class DataEncryptingKey < ActiveRecord::Base
     ENV['KEY_ENCRYPTING_KEY']
   end
 end
-
