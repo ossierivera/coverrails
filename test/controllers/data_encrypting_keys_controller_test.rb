@@ -15,7 +15,7 @@ class DataEncryptingKeysControllerTest < ActionController::TestCase
     assert_response :success
 
     json = JSON.parse(response.body)
-    assert json["message"].include?("Successfully queued job for key rotation")
+    assert json["message"].include?("Job created successfully")
   end
 
   test "GET #status " do

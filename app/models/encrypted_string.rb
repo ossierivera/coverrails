@@ -3,8 +3,8 @@ class EncryptedString < ActiveRecord::Base
 
   attr_encrypted :value,
                  mode: :per_attribute_iv,
-                 key: :encrypted_encryption_key,
-                 algorithm: 'aes-256-cfb'
+                 key: :encrypted_encryption_key
+                 #algorithm: 'aes-256-cfb'
   
   
   validates :token, presence: true, uniqueness: true
@@ -21,20 +21,6 @@ class EncryptedString < ActiveRecord::Base
     data_encrypting_key.encrypted_key
   end
 
-  # Use find_each since it does batch processing 
-  # for 1000 records. Gets all the records that 
-  # are not using the new key and recrypts them all.
-  def self.re_encrypt_all(new_key)
-    EncryptedString.where("data_encrypting_key_id != ?", new_key.id)
-                   .find_each do |encrypted_string|
-      encrypted_string.reencrypt!(new_key)
-    end
-  end
-
-  # Updates the key with the new key and passes
-  # the unencrypted value to the update method
-  # so that the value gets encrypted with the new 
-  # key.
   def reencrypt!(new_key)
     update!(data_encrypting_key_id: new_key.id,
             value: value)
@@ -42,14 +28,9 @@ class EncryptedString < ActiveRecord::Base
 
   private
 
-  def encryption_key
-    self.data_encrypting_key ||= DataEncryptingKey.primary
-    data_encrypting_key.key
-  end
-
   def set_token
     begin
-      self.token = SecureRandom.hex
+      self.token = SecureRandom.urlsafe_base64
     end while EncryptedString.where(token: self.token).present?
   end
 

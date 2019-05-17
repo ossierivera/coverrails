@@ -50,3 +50,4 @@ end
 gem "attr_encrypted", "~> 3.0.0"
 gem "aes"
 gem "sidekiq"
+gem 'sidekiq-unique-jobs'

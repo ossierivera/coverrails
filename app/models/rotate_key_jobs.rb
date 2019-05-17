@@ -1,38 +1,28 @@
 class RotateKeyJobs
-  ROTATE_STATUS = {
-    EMPTY: "No key rotation queued or in progress",
-    QUEUED: "Key rotation has been queued",
-    IN_PROGRESS: "Key rotation is in progress"
-  }
+  JOB_STATUS = {:empty => "No key rotation queued or in progress",
+            :queued => "Key rotation has been queued",
+            :in_progress => "Key rotation is in progress"
+           }
 
-  # Return the number of jobs that are enqueued
-  # in the default sidekiq queue
-  def self.queued_jobs
+  #Because the app is best used as a microservice, there should be no other app
+  #sharing the job queue and worker pool that is why these functions are so simple
+  def self.queued?
     Sidekiq::Queue.new.size
   end
 
-  # Return the number of busy jobs in sidekiq
-  def self.busy_jobs
-    ps = Sidekiq::ProcessSet.new
-    busy_count = 0
-    ps.each do |process|
-      busy_count += process['busy']   
-    end
-    busy_count
+  
+  def self.busy?
+    Sidekiq::Workers.new.size
   end
 
-  # Returns true if it is ok to add new job
-  def self.add_new?
-    self.queued_jobs == 0 && self.busy_jobs == 0
-  end
 
   def self.get_status_message
-    message = if RotateKeyJobs.queued_jobs > 0 
-      ROTATE_STATUS[:QUEUED] 
-    elsif RotateKeyJobs.busy_jobs > 0
-      ROTATE_STATUS[:IN_PROGRESS] 
+    message = if RotateKeyJobs.queued? 
+      JOB_STATUS[:queued] 
+    elsif RotateKeyJobs.busy?
+      JOB_STATUS[:in_progress] 
     else
-      ROTATE_STATUS[:EMPTY]
+      JOB_STATUS[:empty]
     end
   end
 

@@ -1,13 +1,3 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  encrypted_value: MyString
-  encrypted_value_iv: MyString
-  data_encrypting_key_id: 
-  token: MyString
 
-two:
-  encrypted_value: Susana
-  encrypted_value_iv: Oswaldo
-  data_encrypting_key_id: 
-  token: Gladys

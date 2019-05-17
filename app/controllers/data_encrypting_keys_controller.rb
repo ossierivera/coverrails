@@ -1,14 +1,14 @@
+require 'sidekiq/api'
+
 class DataEncryptingKeysController < ApplicationController
   def rotate
-    if RotateKeyJobs.add_new?
-      RotateWorker.perform_async('rotate')
-      render json: { message: "Successfully queued job for key rotation at #{DateTime.now}" }
-    else
-      render json: { message: "Cannot schedule a new key rotation at "\
-                              "this time due to a previous scheduled "\
-                              "rotation. Current status of Queue: "\
-                              "#{RotateKeyJobs.get_status_message}" },
+    begin 
+      RotateWorker.perform_async()
+    rescue SidekiqUniqueJobs::Conflict
+      render json: { message: "A job has already been scheduled. Cannot run another one at this time" },
              status: :conflict
+    else
+      render json: { message: "Job created successfully" }, status: :ok
     end
   end
 
@@ -23,10 +23,7 @@ class RotateWorker
 
   sidekiq_options retry:false
 
-  def perform(param)
-    puts "Started Sidekiq RotateKeys task."
+  def perform()
     DataEncryptingKey.rotate_key
-
-    puts "Completed RotateKeys job."
   end
 end

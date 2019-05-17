@@ -14,7 +14,7 @@ class EncryptedStringsController < ApplicationController
   end
 
   def show
-    render json: { value: @encrypted_string.value }
+    render json: { value: @encrypted_string.value }, status: :ok
   end
 
   def destroy
