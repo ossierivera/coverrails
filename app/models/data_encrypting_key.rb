@@ -3,7 +3,8 @@ class DataEncryptingKey < ActiveRecord::Base
 
   attr_encrypted :key,
                  mode: :per_attribute_iv,
-                 key: :key_encrypting_key
+                 key: :key_encrypting_key,
+                 algorithm: 'aes-256-cfb'
 
   validates :key, presence: true
 

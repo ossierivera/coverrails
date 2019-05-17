@@ -6,6 +6,7 @@ class EncryptedStringTest < ActiveSupport::TestCase
   	# Create an encrypted string
     encrypted_string = EncryptedString.create!(value: "Test string")
     
+    
     # Generate a new primary key
     DataEncryptingKey.generate_new_primary
     new_key = DataEncryptingKey.primary

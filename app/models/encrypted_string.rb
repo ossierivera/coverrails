@@ -2,9 +2,11 @@ class EncryptedString < ActiveRecord::Base
   belongs_to :data_encrypting_key
 
   attr_encrypted :value,
-                 mode: :per_attribute_iv_and_salt,
-                 key: :encrypted_encryption_key
-
+                 mode: :per_attribute_iv,
+                 key: :encrypted_encryption_key,
+                 algorithm: 'aes-256-cfb'
+  
+  
   validates :token, presence: true, uniqueness: true
   validates :data_encrypting_key, presence: true
   validates :value, presence: true
