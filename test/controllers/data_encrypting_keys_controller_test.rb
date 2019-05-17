@@ -12,7 +12,7 @@ class DataEncryptingKeysControllerTest < ActionController::TestCase
     Sidekiq::Worker.clear_all
     post :rotate
     for i in 1..100 do
-      EncryptedString.create!(value: "{i} in line")
+      EncryptedString.create!(value: "#{i} in line")
     end
 
     post :rotate
